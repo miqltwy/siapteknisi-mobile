@@ -1,0 +1,1789 @@
+===== main.dart =====
+import 'package:flutter/material.dart';
+import 'next_screen.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: OnboardingScreen(),
+    );
+  }
+}
+
+class OnboardingScreen extends StatelessWidget {
+  const OnboardingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      backgroundColor: const Color(0xFFA7C1A8),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Judul atas
+          Padding(
+            padding: EdgeInsets.only(top: size.height * 0.1),
+            child: Text(
+              "SiapTeknis",
+              style: TextStyle(
+                fontSize: size.width * 0.08,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ),
+
+          // Ilustrasi (gambar agak ke bawah sedikit)
+          Container(
+            margin: EdgeInsets.only(top: size.height * 0.09), // geser gambar ke bawah
+            height: size.height * 0.4,
+            padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
+            child: Image.asset(
+              "lib/img/teknisi.png", // pastikan path ini benar
+              fit: BoxFit.contain,
+            ),
+          ),
+
+          // Teks + tombol bawah
+          Container(
+            width: size.width,
+            decoration: BoxDecoration(
+              color: const Color(0xFF819A91),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(size.width * 0.42),
+                topRight: Radius.circular(size.width * 0.42),
+              ),
+            ),
+            padding: EdgeInsets.symmetric(
+              vertical: size.height * 0.09,
+            ),
+            child: Column(
+              children: [
+                Text(
+                  "Teknisi Cepat\nLayanan Tepat",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: size.width * 0.05,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: size.height * 0.03),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFA7C1A8),
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: size.width * 0.1,
+                      vertical: size.height * 0.015,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NextScreen(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "LANJUTKAN",
+                    style: TextStyle(
+                      fontSize: size.width * 0.045,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+===== home_screen.dart =====
+import 'package:flutter/material.dart';
+import 'riwayat_page.dart';
+import 'notifikasi_page.dart'; // buka halaman notifikasi
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFA7C1A8),
+
+      body: Column(
+        children: [
+          SizedBox(height: size.height * 0.1),
+          ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.grey[300],
+              radius: 25,
+              child: const Icon(Icons.person, size: 30, color: Colors.black),
+            ),
+            title: const Text("Selamat Datang", style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: const Text("Mohammad Aziz"),
+          ),
+          const Divider(),
+          SizedBox(height: size.height * 0.02),
+
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image(image: AssetImage("assets/teknisi.png"), height: 120),
+                Text("PESANAN SAAT INI", style: TextStyle(fontWeight: FontWeight.bold)),
+                SizedBox(height: 10),
+                Center(child: Text("BELUM ADA PESANAN")),
+              ],
+            ),
+          ),
+
+          const Spacer(),
+
+          // FAB opsional (bisa diarahkan ke Halamantambah)
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: FloatingActionButton(
+                onPressed: () {
+                  // Navigator.push(context, MaterialPageRoute(builder: (_) => const Halamantambah()));
+                },
+                backgroundColor: Colors.grey[700],
+                child: const Icon(Icons.add, size: 30),
+              ),
+            ),
+          ),
+        ],
+      ),
+
+      // bottom bar diletakkan di properti bottomNavigationBar agar tap terdeteksi
+      bottomNavigationBar: SafeArea(
+        child: BottomAppBar(
+          color: Colors.grey[300],
+          child: SizedBox(
+            height: 56,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _ItemNav(
+                  icon: Icons.home,
+                  label: 'Beranda',
+                  onTap: () {
+                    // sudah di Home
+                  },
+                ),
+                _ItemNav(
+                  icon: Icons.history,
+                  label: 'Riwayat',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const RiwayatPage()),
+                    );
+                  },
+                ),
+                _ItemNav(
+                  icon: Icons.notifications,
+                  label: 'Notifikasi',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const NotifikasiPage()),
+                    );
+                  },
+                ),
+                _ItemNav(
+                  icon: Icons.logout,
+                  label: 'Logout',
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: const Text('Logout'),
+                        content: const Text('Yakin ingin keluar?'),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal')),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(ctx);      // tutup dialog
+                              Navigator.pop(context);  // balik 1 halaman (atau arahkan ke login)
+                            },
+                            child: const Text('Ya'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ItemNav extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _ItemNav({required this.icon, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: Colors.black),
+              const SizedBox(height: 2),
+              Text(label, style: const TextStyle(color: Colors.black, fontSize: 11)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+===== next_screen.dart =====
+import 'package:flutter/material.dart';
+import 'pesanan.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: const NextScreen(),
+    );
+  }
+}
+
+class NextScreen extends StatelessWidget {
+  const NextScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      backgroundColor: const Color(0xFFA7C1A8),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Selamat Datang
+            Container(
+              width: size.width,
+              margin: EdgeInsets.only(top: size.height * 0.1),
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.08),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Selamat\nDatang!",
+                    style: TextStyle(
+                      fontSize: size.width * 0.09,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: size.height * 0.01),
+                  Text(
+                    "Silakan masuk untuk\nmengakses layanan teknisi Kominfo",
+                    style: TextStyle(
+                      fontSize: size.width * 0.04,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: size.height * 0.07),
+
+            // Kotak Login
+            Container(
+              width: size.width * 0.85,
+              padding: EdgeInsets.all(size.width * 0.05),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE6E9DB),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  // Email Field
+                  Container(
+                    margin: EdgeInsets.only(bottom: size.height * 0.02),
+                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.email_outlined, color: Colors.grey),
+                        SizedBox(width: size.width * 0.02),
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: "Masukkan email",
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Password Field
+                  Container(
+                    margin: EdgeInsets.only(bottom: size.height * 0.03),
+                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.lock_outline, color: Colors.grey),
+                        SizedBox(width: size.width * 0.02),
+                        Expanded(
+                          child: TextField(
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              hintText: "Masukkan password",
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                        const Icon(Icons.visibility_off, color: Colors.grey),
+                      ],
+                    ),
+                  ),
+
+                  // Tombol Login
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PesananPage(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: size.height * 0.015),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF5D6F66),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "LOGIN",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: size.width * 0.045,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+===== pesanan.dart =====
+import 'package:flutter/material.dart';
+import 'halamantambah.dart';
+import 'riwayat_page.dart';
+import 'notifikasi_page.dart';
+
+
+class PesananPage extends StatefulWidget {
+  const PesananPage({super.key});
+
+  @override
+  State<PesananPage> createState() => _PesananPageState();
+}
+
+class _PesananPageState extends State<PesananPage> {
+  int _selectedIndex = 0;
+
+  // Dipanggil saat item Bottom Nav ditekan
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    // Navigasi per tab
+    if (index == 1) {
+      // Riwayat
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const RiwayatPage()),
+      );
+    } else if (index == 2) {
+      // Notifikasi (contoh sederhana)
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Menu Notifikasi ditekan')),
+      );
+    } else if (index == 3) {
+      // Logout (contoh dialog konfirmasi)
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Yakin ingin keluar?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Batal'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // tutup dialog
+                Navigator.pop(context); // kembali ke halaman sebelumnya (login)
+              },
+              child: const Text('Ya'),
+            ),
+          ],
+        ),
+      );
+    }
+    // index == 0 (Beranda) -> sudah di halaman ini, tidak melakukan apa-apa
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFA7C1A8),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Profil
+            Container(
+              margin: EdgeInsets.only(top: size.height * 0.05),
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+              child: Row(
+                children: [
+                  const CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.brown,
+                    child: Icon(Icons.person, size: 35, color: Colors.white),
+                  ),
+                  SizedBox(width: size.width * 0.04),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Selamat Datang",
+                        style: TextStyle(
+                          fontSize: size.width * 0.045,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Text("Mohammad Aziz"),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Divider(thickness: 1, color: Colors.black),
+            ),
+
+            // Gambar Teknisi
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      "https://www.gstatic.com/flutter-onestack-prototype/genui/example_1.jpg",
+                      width: double.infinity,
+                      height: size.width * 0.45,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "PESANAN SAAT INI",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // Kartu Pesanan (contoh statis)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  _buildTicketCard(
+                    noTiket: "KMF918327",
+                    chipText: "Dalam antrian",
+                    chipColor: const Color(0xFF56A1DA), // biru
+                  ),
+                  const SizedBox(height: 12),
+                  _buildTicketCard(
+                    noTiket: "KMF918327",
+                    chipText: "Menunggu Persetujuan",
+                    chipColor: const Color(0xFFF1C94A), // kuning
+                  ),
+                  const SizedBox(height: 12),
+                  _buildTicketCard(
+                    noTiket: "KMF918327",
+                    chipText: "Menunggu Persetujuan",
+                    chipColor: const Color(0xFFF1C94A),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 90), // ruang untuk BottomAppBar
+          ],
+        ),
+      ),
+
+      // Tombol Tambah di Kanan & Naik ke Atas Sedikit
+      floatingActionButton: Transform.translate(
+        offset: const Offset(0, -45),
+        child: SizedBox(
+          width: 65,
+          height: 65,
+          child: FloatingActionButton(
+            backgroundColor: const Color(0xFF819A91),
+            shape: const CircleBorder(),
+            onPressed: () {
+              // -> arahkan ke halamantambah.dart
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const Halamantambah()),
+              );
+            },
+            child: const Icon(Icons.add, size: 40, color: Colors.white),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+
+      // Bottom Navigation Bar
+      bottomNavigationBar: BottomAppBar(
+        color: const Color(0xFF819A91),
+        child: SizedBox(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              _buildNavItem(Icons.home, "Beranda", 0),
+              _buildNavItem(Icons.history, "Riwayat", 1),
+              _buildNavItem(Icons.notifications, "Notifikasi", 2),
+              _buildNavItem(Icons.logout, "Logout", 3),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ==== Widgets bantu ====
+
+  Widget _buildTicketCard({
+    required String noTiket,
+    required String chipText,
+    required Color chipColor,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF93AC9B), // hijau-keabuan seperti mockup
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.6)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: Row(
+        children: [
+          // teks kiri
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "NO. TIKET",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  noTiket,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // chip status kanan
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: chipColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              chipText,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavItem(IconData icon, String label, int index) {
+    final bool active = _selectedIndex == index;
+    return InkWell(
+      onTap: () => _onItemTapped(index),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(icon, color: active ? Colors.white : Colors.black),
+          Text(
+            label,
+            style: TextStyle(
+              color: active ? Colors.white : Colors.black,
+              fontSize: 12,
+              fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+===== riwayat_page.dart =====
+import 'package:flutter/material.dart';
+import 'pesanan.dart';
+import 'home_screen.dart';
+// untuk tombol "Beranda" di bottom bar
+
+// =============== RIWAYAT ===============
+class RiwayatPage extends StatefulWidget {
+  const RiwayatPage({super.key});
+
+  @override
+  State<RiwayatPage> createState() => _RiwayatPageState();
+}
+
+class _RiwayatPageState extends State<RiwayatPage> {
+  int _selectedIndex = 1; // tab Riwayat aktif
+
+  void _onItemTapped(int index) {
+    setState(() => _selectedIndex = index);
+
+    if (index == 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const PesananPage()),
+      );
+    } else if (index == 2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Menu Notifikasi ditekan')),
+      );
+    } else if (index == 3) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Yakin ingin keluar?'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: const Text('Ya'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFA7C1A8),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Riwayat Pesanan',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+            const SizedBox(height: 8),
+            const Text('Pesanan', style: TextStyle(fontSize: 12, color: Colors.black)),
+            const SizedBox(height: 16),
+
+            // === Kartu 1 ===
+            _HistoryCard(
+              noTiket: 'KMF982108',
+              tanggal: '12 JULI 2025',
+              statusText: 'SELESAI',
+              statusColor: Colors.green,
+              deskripsi: 'JARINGAN WIFI TIDAK BISA\nTERHUBUNG KE INTERNET',
+              onDetail: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const DetailPesananPage()));
+              },
+            ),
+            const SizedBox(height: 12),
+
+            // === Kartu 2 ===
+            _HistoryCard(
+              noTiket: 'KMF982108',
+              tanggal: '12 JULI 2025',
+              statusText: 'DITOLAK',
+              statusColor: Colors.red,
+              deskripsi: 'JARINGAN WIFI TIDAK BISA\nTERHUBUNG KE INTERNET',
+              onDetail: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const DetailPesananPage()));
+              },
+            ),
+            const SizedBox(height: 12),
+
+            // === Kartu 3 ===
+            _HistoryCard(
+              noTiket: 'KMF982108',
+              tanggal: '12 JULI 2025',
+              statusText: 'SELESAI',
+              statusColor: Colors.green,
+              deskripsi: 'JARINGAN WIFI TIDAK BISA\nTERHUBUNG KE INTERNET',
+              onDetail: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const DetailPesananPage()));
+              },
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _BottomNavBar(selectedIndex: _selectedIndex, onTap: _onItemTapped),
+    );
+  }
+}
+
+class _HistoryCard extends StatelessWidget {
+  final String noTiket;
+  final String tanggal;
+  final String statusText;
+  final Color statusColor;
+  final String deskripsi;
+  final VoidCallback onDetail;
+
+  const _HistoryCard({
+    Key? key,
+    required this.noTiket,
+    required this.tanggal,
+    required this.statusText,
+    required this.statusColor,
+    required this.deskripsi,
+    required this.onDetail,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(6),
+        onTap: onDetail, // seluruh kartu klik -> Detail
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF93AC9B),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: Colors.white, width: 1), // garis putih tepi kartu
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _RowLabelValue(label: 'NO. TIKET', value: noTiket),
+              const SizedBox(height: 6),
+              _RowLabelValue(label: 'TANGGAL', value: tanggal),
+              const SizedBox(height: 6),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const _LabelBox(text: 'STATUS TERAKHIR'),
+                  const Text(' :  ', style: TextStyle(color: Colors.white)),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: statusColor,
+                      borderRadius: BorderRadius.circular(12), // pill
+                    ),
+                    child: Text(
+                      statusText,
+                      style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _LabelBox(text: 'DESKRIPSI'),
+                  const Text(' :  ', style: TextStyle(color: Colors.white)),
+                  Expanded(child: Text(deskripsi, style: const TextStyle(color: Colors.white))),
+                ],
+              ),
+              const SizedBox(height: 10),
+              _PressUnderlineText(
+                text: 'LIHAT DETAIL',
+                onTap: onDetail,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// =============== DETAIL PESANAN ===============
+class DetailPesananPage extends StatefulWidget {
+  const DetailPesananPage({super.key});
+
+  @override
+  State<DetailPesananPage> createState() => _DetailPesananPageState();
+}
+
+class _DetailPesananPageState extends State<DetailPesananPage> {
+  int _selectedIndex = 1;
+  void _onItemTapped(int index) => setState(() => _selectedIndex = index);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFA7C1A8),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _HeaderBack(title: 'Riwayat Laporan Pesanan'),
+            const SizedBox(height: 8),
+
+            // Breadcrumb: hitam; underline hanya ketika ditekan
+            Row(
+              children: [
+                _BreadcrumbText(
+                  text: 'Pesanan',
+                  onTap: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => const RiwayatPage()),
+                          (route) => false,
+                    );
+                  },
+                ),
+                const Text('  >  ', style: TextStyle(fontSize: 12, color: Colors.black)),
+                const _BreadcrumbText(text: 'Detail'), // aktif, non-clickable
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Kartu gabungan (border putih)
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF93AC9B),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: Colors.white, width: 1),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _RowLabelValue(label: 'NO. TIKET', value: 'KMF982108', width: 140),
+                  const SizedBox(height: 6),
+                  const _RowLabelValue(label: 'KATEGORI', value: 'JARINGAN', width: 140),
+                  const SizedBox(height: 6),
+                  const _RowLabelValue(label: 'TANGGAL', value: '12 JULI 2025', width: 140),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      const _LabelBox(text: 'STATUS TERAKHIR', width: 140),
+                      const Text(' :  ', style: TextStyle(color: Colors.white)),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(12)),
+                        child: const Text('SELESAI',
+                            style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  const _RowLabelValue(
+                    label: 'DESKRIPSI',
+                    value: 'Jaringan WIFI tidak dapat terhubung ke internet',
+                    width: 140,
+                  ),
+                  const SizedBox(height: 6),
+                  const _RowLabelValue(label: 'ESTIMASI PENGERJAAN', value: '2 JAM', width: 140),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            _PressUnderlineText(
+              text: 'LIHAT LAPORAN TEKNISI',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LaporanTeknisiPage()),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _BottomNavBar(selectedIndex: _selectedIndex, onTap: _onItemTapped),
+    );
+  }
+}
+
+// =============== LAPORAN TEKNISI (FOTO 4 + PREVIEW) ===============
+class LaporanTeknisiPage extends StatefulWidget {
+  const LaporanTeknisiPage({super.key});
+
+  @override
+  State<LaporanTeknisiPage> createState() => _LaporanTeknisiPageState();
+}
+
+class _LaporanTeknisiPageState extends State<LaporanTeknisiPage> {
+  int _selectedIndex = 1;
+  void _onItemTapped(int index) => setState(() => _selectedIndex = index);
+
+  // Contoh sumber gambar; ganti dengan path/URL asli kalau sudah ada
+// Contoh sumber gambar; ganti dengan link/URL asli kalau sudah ada
+  final List<ImageProvider> _images = const [
+    NetworkImage('https://picsum.photos/id/237/800/600'), // beda-beda id
+    NetworkImage('https://picsum.photos/id/238/800/600'),
+    NetworkImage('https://picsum.photos/id/239/800/600'),
+    NetworkImage('https://picsum.photos/id/240/800/600'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFA7C1A8),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _HeaderBack(title: 'Riwayat Laporan Pesanan'),
+            const SizedBox(height: 8),
+
+            // Breadcrumb: hitam; underline saat ditekan + NAVIGASI
+            Row(
+              children: [
+                _BreadcrumbText(
+                  text: 'Pesanan',
+                  onTap: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => const RiwayatPage()),
+                          (route) => false,
+                    );
+                  },
+                ),
+                const Text('  >  ', style: TextStyle(fontSize: 12, color: Colors.black)),
+                _BreadcrumbText(
+                  text: 'Detail',
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => const DetailPesananPage()),
+                    );
+                  },
+                ),
+                const Text('  >  ', style: TextStyle(fontSize: 12, color: Colors.black)),
+                const _BreadcrumbText(text: 'Laporan'), // aktif
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Kartu laporan (border putih) — layout persis seperti gambar
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF93AC9B),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: Colors.white, width: 1),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _RowLabelValue(label: 'NO. TIKET', value: 'KMF982108', width: 140),
+                  const SizedBox(height: 6),
+                  const _RowLabelValue(label: 'TANGGAL', value: '12 JULI 2025', width: 140),
+                  const SizedBox(height: 6),
+                  const _RowLabelValue(label: 'TEKNISI', value: 'AGUNG VAN BASKERVILLE', width: 140),
+                  const SizedBox(height: 10),
+
+                  const _LabelBox(text: 'FOTO', width: 140),
+                  const SizedBox(height: 8),
+
+                  // Baris 4 foto — jarak dan ukuran disamakan
+                  Row(
+                    children: List.generate(4, (i) {
+                      return Padding(
+                        padding: EdgeInsets.only(right: i == 3 ? 0 : 12),
+                        child: _PhotoBox(
+                          image: _images[i],
+                          onTap: () => _showImagePreview(context, _images[i]),
+                        ),
+                      );
+                    }),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  const _RowLabelValue(
+                    label: 'CATATAN',
+                    value: 'Router rusak dan perlu diganti baru',
+                    width: 140,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _BottomNavBar(selectedIndex: _selectedIndex, onTap: _onItemTapped),
+    );
+  }
+
+  void _showImagePreview(BuildContext context, ImageProvider image) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (_) => GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          color: Colors.black87,
+          alignment: Alignment.center,
+          child: InteractiveViewer(
+            minScale: 0.8,
+            maxScale: 4.0,
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Image(
+                image: image,
+                errorBuilder: (_, __, ___) {
+                  // fallback jika asset belum ada -> tampilkan placeholder besar
+                  return Container(
+                    width: 320,
+                    height: 320,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFB9C7BC),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.image, color: Colors.white, size: 120),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// =============== WIDGET UMUM ===============
+class _HeaderBack extends StatelessWidget {
+  final String title;
+  const _HeaderBack({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        InkWell(
+          onTap: () => Navigator.pop(context),
+          borderRadius: BorderRadius.circular(24),
+          child: Container(
+            width: 32,
+            height: 32,
+            decoration: const BoxDecoration(color: Color(0xFF94AE9C), shape: BoxShape.circle),
+            child: const Icon(Icons.arrow_back, size: 18, color: Colors.white),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.black)),
+      ],
+    );
+  }
+}
+
+class _RowLabelValue extends StatelessWidget {
+  final String label;
+  final String value;
+  final double width;
+  const _RowLabelValue({required this.label, required this.value, this.width = 105});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _LabelBox(text: label, width: width),
+        const Text(' :  ', style: TextStyle(color: Colors.white)),
+        Expanded(child: Text(value, style: const TextStyle(color: Colors.white))),
+      ],
+    );
+  }
+}
+
+class _LabelBox extends StatelessWidget {
+  final String text;
+  final double width;
+  const _LabelBox({required this.text, this.width = 105});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(width: width, child: Text(text, style: const TextStyle(color: Colors.white)));
+  }
+}
+
+// === PhotoBox baru: ukuran & gaya sesuai screenshot + bisa di-tap ===
+class _PhotoBox extends StatelessWidget {
+  final ImageProvider? image;
+  final VoidCallback? onTap;
+  const _PhotoBox({this.image, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 72,   // ukuran dibuat sedikit lebih lebar agar mirip contoh
+        height: 64,
+        decoration: BoxDecoration(
+          color: const Color(0xFFB9C7BC),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.white, width: 1),
+        ),
+        alignment: Alignment.center,
+        child: image == null
+            ? const Icon(Icons.image, color: Colors.white, size: 28)
+            : ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Image(
+            image: image!,
+            width: 60,
+            height: 52,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) =>
+            const Icon(Icons.image, color: Colors.white, size: 28),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BottomNavBar extends StatelessWidget {
+  final int selectedIndex;
+  final ValueChanged<int> onTap;
+  const _BottomNavBar({required this.selectedIndex, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget item(IconData icon, String label, int index) {
+      final active = selectedIndex == index;
+      return InkWell(
+        onTap: () => onTap(index),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: active ? Colors.white : Colors.black),
+            Text(label,
+                style: TextStyle(
+                    color: active ? Colors.white : Colors.black,
+                    fontSize: 12,
+                    fontWeight: active ? FontWeight.w600 : FontWeight.w400)),
+          ],
+        ),
+      );
+    }
+
+    return BottomAppBar(
+      color: const Color(0xFF819A91),
+      child: SizedBox(
+        height: 60,
+        child:
+        Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
+          item(Icons.home, 'Beranda', 0),
+          item(Icons.history, 'Riwayat', 1),
+          item(Icons.notifications, 'Notifikasi', 2),
+          item(Icons.logout, 'Logout', 3),
+        ]),
+      ),
+    );
+  }
+}
+
+// =============== Widgets bantu interaksi teks/link ===============
+class _BreadcrumbText extends StatefulWidget {
+  final String text;
+  final VoidCallback? onTap; // null = non-clickable
+
+  const _BreadcrumbText({required this.text, this.onTap});
+
+  @override
+  State<_BreadcrumbText> createState() => _BreadcrumbTextState();
+}
+
+class _BreadcrumbTextState extends State<_BreadcrumbText> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final clickable = widget.onTap != null;
+    final showUnderline = clickable && _pressed;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: clickable ? (_) => setState(() => _pressed = true) : null,
+      onTapUp: clickable
+          ? (_) {
+        setState(() => _pressed = false);
+        widget.onTap!.call();
+      }
+          : null,
+      onTapCancel: clickable ? () => setState(() => _pressed = false) : null,
+      child: Text(
+        widget.text,
+        style: TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+          decoration: showUnderline ? TextDecoration.underline : TextDecoration.none,
+          decorationColor: Colors.black,
+        ),
+      ),
+    );
+  }
+}
+
+class _PressUnderlineText extends StatefulWidget {
+  final String text;
+  final VoidCallback onTap;
+  const _PressUnderlineText({required this.text, required this.onTap});
+
+  @override
+  State<_PressUnderlineText> createState() => _PressUnderlineTextState();
+}
+
+class _PressUnderlineTextState extends State<_PressUnderlineText> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) {
+        setState(() => _pressed = false);
+        widget.onTap();
+      },
+      onTapCancel: () => setState(() => _pressed = false),
+      child: Text(
+        widget.text,
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+          decoration: _pressed ? TextDecoration.underline : TextDecoration.none,
+          decorationColor: Colors.black,
+        ),
+      ),
+    );
+  }
+}
+
+
+===== notifikasi_page.dart =====
+import 'package:flutter/material.dart';
+import 'pesanan.dart';
+import 'riwayat_page.dart';
+import 'halamantambah.dart';
+import '';// klik kartu → masuk ke form ini
+
+class NotifikasiPage extends StatefulWidget {
+  const NotifikasiPage({super.key});
+
+  @override
+  State<NotifikasiPage> createState() => _NotifikasiPageState();
+}
+
+class _NotifikasiPageState extends State<NotifikasiPage> {
+  int _selectedIndex = 2; // tab Notifikasi aktif
+
+  void _onItemTapped(int index) {
+    setState(() => _selectedIndex = index);
+
+    if (index == 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const PesananPage()),
+      );
+    } else if (index == 1) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const RiwayatPage()),
+      );
+    } else if (index == 3) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Yakin ingin keluar?'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: const Text('Ya'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void _bukaFormPesananBaru() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const Halamantambah()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFA7C1A8),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Notifikasi', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+
+            const Text('Terbaru', style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 10),
+
+            _NotifTile(
+              role: 'Teknisi',
+              name: 'Douglas Arifin',
+              subtitle: 'Laporan hasil perbaikan dari teknisi',
+              thumbUrl: 'https://picsum.photos/seed/ntf1/200/200',
+              isRead: false,
+              onTap: _bukaFormPesananBaru,
+            ),
+            const SizedBox(height: 12),
+            _NotifTile(
+              role: 'Admin',
+              name: 'Admin Kominfo',
+              subtitle: 'Estimasi perbaikan jaringan',
+              thumbUrl: 'https://picsum.photos/seed/ntf2/200/200',
+              isRead: false,
+              onTap: _bukaFormPesananBaru,
+            ),
+            const SizedBox(height: 12),
+            _NotifTile(
+              role: 'Teknisi',
+              name: 'Douglas Arifin',
+              subtitle: 'Laporan hasil perbaikan dari teknisi',
+              thumbUrl: 'https://picsum.photos/seed/ntf3/200/200',
+              isRead: false,
+              onTap: _bukaFormPesananBaru,
+            ),
+
+            const SizedBox(height: 18),
+            const Text('Sudah dibaca', style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 10),
+
+            _NotifTile(
+              role: 'Teknisi',
+              name: 'Douglas Arifin',
+              subtitle: 'Laporan hasil perbaikan dari teknisi',
+              thumbUrl: 'https://picsum.photos/seed/ntf4/200/200',
+              isRead: true,
+              onTap: _bukaFormPesananBaru,
+            ),
+          ],
+        ),
+      ),
+
+      bottomNavigationBar: BottomAppBar(
+        color: const Color(0xFF819A91),
+        child: SizedBox(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              _buildNavItem(Icons.home, 'Beranda', 0),
+              _buildNavItem(Icons.history, 'Riwayat', 1),
+              _buildNavItem(Icons.notifications, 'Notifikasi', 2),
+              _buildNavItem(Icons.logout, 'Logout', 3),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(IconData icon, String label, int index) {
+    final active = _selectedIndex == index;
+    return InkWell(
+      onTap: () => _onItemTapped(index),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: active ? Colors.white : Colors.black),
+          Text(
+            label,
+            style: TextStyle(
+              color: active ? Colors.white : Colors.black,
+              fontSize: 12,
+              fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NotifTile extends StatelessWidget {
+  final String role;
+  final String name;
+  final String subtitle;
+  final String thumbUrl;
+  final bool isRead;
+  final VoidCallback? onTap; // penting: biar kartu bisa di-tap
+
+  const _NotifTile({
+    required this.role,
+    required this.name,
+    required this.subtitle,
+    required this.thumbUrl,
+    required this.isRead,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Color cardColor =
+    isRead ? const Color(0xFF93AC9B).withOpacity(0.5) : const Color(0xFF93AC9B);
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: onTap, // trigger navigasi
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.10),
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 22,
+              backgroundColor: Colors.white,
+              child: Text(
+                role.length > 6 ? role.substring(0, 5) : role,
+                style: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w600, fontSize: 12),
+              ),
+            ),
+            const SizedBox(width: 12),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name,
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(width: 12),
+
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Image.network(
+                thumbUrl,
+                width: 54,
+                height: 54,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+===== halamantambah.dart =====
+import 'package:flutter/material.dart';
+
+class Halamantambah extends StatelessWidget {
+  const Halamantambah({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFA7C1A8), // background hijau muda
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 40),
+
+              // Tombol kembali
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFA7C1A8), // sama dgn bg
+                  foregroundColor: Colors.white, // teks putih
+                  side: const BorderSide(color: Colors.white70),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Kembali"),
+              ),
+
+              const SizedBox(height: 20),
+
+              const Text(
+                "Buat Pesanan Baru",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+
+              const SizedBox(height: 25),
+
+              // Card form
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEDEDE0),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Informasi Pesanan",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Input kategori
+                    TextField(
+                      decoration: InputDecoration(
+                        labelText: "Kategori masalah",
+                        labelStyle: const TextStyle(color: Colors.black),
+                        filled: true,
+                        fillColor: const Color(0xFFEDEDE0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 12),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // Input deskripsi
+                    TextField(
+                      maxLines: 4,
+                      decoration: InputDecoration(
+                        labelText: "Deskripsi",
+                        labelStyle: const TextStyle(color: Colors.black),
+                        filled: true,
+                        fillColor: const Color(0xFFEDEDE0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        contentPadding: const EdgeInsets.all(12),
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    // Tombol selesai
+                    SizedBox(
+                      width: size.width * 0.5,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: () {
+                          // aksi submit
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          "SELESAI",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
